@@ -15,6 +15,8 @@ import {
   TooltipContent,
   TooltipProvider
 } from "@/components/ui/tooltip";
+import { BookUser } from "lucide-react";
+import { useAuth, useSession } from "@clerk/nextjs";
 
 interface MenuProps {
   isOpen: boolean | undefined;
@@ -23,6 +25,7 @@ interface MenuProps {
 export function Menu({ isOpen }: MenuProps) {
   const pathname = usePathname();
   const menuList = getMenuList(pathname);
+  const auth = useAuth();
 
   return (
     <ScrollArea className="[&>div>div[style]]:!block">
@@ -114,6 +117,71 @@ export function Menu({ isOpen }: MenuProps) {
               )}
             </li>
           ))}
+
+          {auth.orgRole === "org:admin" ? (
+            <li className="w-full pt-5">
+              {isOpen || isOpen === undefined ? (
+                <p className="text-sm font-medium text-muted-foreground px-4 pb-2 max-w-[248px] truncate">
+                  Admin
+                </p>
+              ) : !isOpen && isOpen !== undefined ? (
+                <TooltipProvider>
+                  <Tooltip delayDuration={100}>
+                    <TooltipTrigger className="w-full">
+                      <div className="w-full flex justify-center items-center">
+                        <Ellipsis className="h-5 w-5" />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="right">
+                      <p>Admin</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              ) : (
+                <p className="pb-2"></p>
+              )}
+              <div className="w-full">
+                <TooltipProvider disableHoverableContent>
+                  <Tooltip delayDuration={100}>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant={"ghost"}
+                        className={`${cn(
+                          "w-full justify-start h-10 mb-1",
+                          pathname.startsWith("/management")
+                            ? "bg-green-400 text-white"
+                            : ""
+                        )}`}
+                        asChild
+                      >
+                        <Link href={"/management"}>
+                          <span className={cn(isOpen === false ? "" : "mr-4")}>
+                            <BookUser size={18} />
+                          </span>
+                          <p
+                            className={cn(
+                              "max-w-[200px] truncate",
+                              isOpen === false
+                                ? "-translate-x-96 opacity-0"
+                                : "translate-x-0 opacity-100"
+                            )}
+                          >
+                            Management
+                          </p>
+                        </Link>
+                      </Button>
+                    </TooltipTrigger>
+                    {isOpen === false && (
+                      <TooltipContent side="right">
+                        {"Management"}
+                      </TooltipContent>
+                    )}
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+            </li>
+          ) : null}
+
           <li className="w-full grow flex items-end">
             <TooltipProvider disableHoverableContent>
               <Tooltip delayDuration={100}>

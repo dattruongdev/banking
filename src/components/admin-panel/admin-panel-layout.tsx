@@ -31,7 +31,7 @@ export default function AdminPanelLayout({
           !settings.disabled && (!getOpenState() ? "lg:ml-[90px]" : "lg:ml-72")
         )}
       >
-        <Footer />
+        {/* <Footer /> */}
       </footer>
     </>
   );

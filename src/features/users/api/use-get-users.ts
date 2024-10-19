@@ -1,32 +1,35 @@
+import { useAppAuth } from "@/hooks/use-auth";
 import { useQuery } from "@tanstack/react-query";
 
-async function callUser() {
-  const sessionToken = document.cookie
-    .split("; ")
-    .find((row) => row.startsWith("__session="))
-    ?.split("=")[1];
-  console.log(sessionToken);
-
-  if (sessionToken) {
-    const response = await fetch(`${process.env.SERVER_PUBLIC_URL}/users`, {
-      method: "GET",
-      headers: {
-        Authorization: "Bearer " + sessionToken
-      },
-      credentials: "include"
-    });
-    if (!response.ok) {
-      throw new Error("Failed to fetch users");
-    }
-
-    const data = await response.json();
-    return data;
-  }
-}
 export const useGetUsers = () => {
+  const userinfo = useAppAuth();
   const query = useQuery({
     queryKey: ["users"],
-    queryFn: callUser
+    queryFn: async function callUser() {
+      const sessionToken = userinfo?.sessionToken;
+      const userId = userinfo?.session?.user?.id;
+
+      if (sessionToken) {
+        console.log(sessionToken);
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/users/admin/${userId}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: "Bearer " + sessionToken
+            }
+          }
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch users");
+        }
+
+        const data = await response.json();
+        return data;
+      }
+      return null;
+    },
+    enabled: !!userinfo
   });
 
   return query;
