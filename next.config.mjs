@@ -8,15 +8,20 @@ const nextConfig = {
         headers: [
           {
             key: "Access-Control-Allow-Origin",
-            value: "http://localhost:3000" // Replace with your frontend origin
+            value: "*" // Replace with your frontend origin
           },
           {
             key: "Access-Control-Allow-Methods",
-            value: "GET,POST,OPTIONS" // Allow GET, POST, and OPTIONS methods
+            value: "GET,POST" // Allow GET, POST, and OPTIONS methods
           },
+
           {
             key: "Access-Control-Allow-Headers",
             value: "Content-Type, Authorization" // Allow specific headers
+          },
+          {
+            key: "Access-Control-Allow-Credentials",
+            value: "true"
           }
         ]
       }

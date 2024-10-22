@@ -1,19 +1,13 @@
 import { useAppAuth } from "@/hooks/use-auth";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
 
 export type Transaction = {
   id?: string;
   amount?: number;
   date?: Date;
   userid?: string;
-  payee?: Payee;
-  category?: Category;
-};
-
-export type Category = {
-  id: string;
-  name: string;
+  payeeName?: string;
+  payeeId?: string;
 };
 
 export type Payee = {
@@ -47,10 +41,18 @@ export function useGetTransactions() {
         throw new Error("Can't fetch transactions from server");
       }
 
-      const data: Transaction[] = await response.json();
-      console.log(data);
+      const data = await response.json();
 
-      return data;
+      return data.map(
+        (tx: any): Transaction => ({
+          id: tx.id,
+          amount: tx.amount,
+          payeeName: tx.payee.fullname,
+          payeeId: tx.payee.id,
+          date: tx.date,
+          userid: tx.user_id
+        })
+      );
     }
   });
 

@@ -1,12 +1,12 @@
-"use client";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
-import { useGetUsers } from "@/features/users/api/use-get-users";
+import UserDisplay from "@/components/home/UserDisplay";
 import { ClerkLoaded, ClerkLoading, useSession } from "@clerk/nextjs";
+import { clerkClient, auth } from "@clerk/nextjs/server";
 import { Loader2 } from "lucide-react";
 
-export default function Page() {
-  const { session, isSignedIn } = useSession();
-  const userQuery = useGetUsers();
+export default async function Page() {
+  const { userId } = auth();
+  const user = await clerkClient.users.getUser(userId + "");
 
   return (
     <ContentLayout title="Home">
@@ -16,16 +16,12 @@ export default function Page() {
       <ClerkLoaded>
         <div className="flex flex-col">
           <div className="text-3xl text-neutral-800 font-medium py-2">
-            Welcome,{" "}
-            <span className="text-green-500">{session?.user.fullName}</span>
+            Welcome, <span className="text-green-500">{user.fullName}</span>
           </div>
           <div className="text-zinc-500 text-lg mb-5">
             Access & manage your account and transactions efficiently
           </div>
-
-          {userQuery.data?.map((item: any, index: number) => (
-            <div>{item.name}</div>
-          ))}
+          <UserDisplay />
         </div>
       </ClerkLoaded>
     </ContentLayout>

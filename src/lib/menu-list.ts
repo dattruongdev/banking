@@ -1,11 +1,9 @@
 import {
   LucideIcon,
   CircleDollarSign,
-  WalletMinimal,
   History,
   Handshake,
-  Home,
-  CreditCard
+  Home
 } from "lucide-react";
 
 type Submenu = {
@@ -53,39 +51,20 @@ export function getMenuList(pathname: string): Group[] {
               label: "Pending"
             },
             {
-              href: "/requests/my-requests",
-              label: "My requests"
-            },
-            {
               href: "/requests/all-requests",
               label: "All requests"
             }
           ]
         },
         {
-          href: "/my-banks",
-          label: "My Banks",
+          href: "/presets",
+          label: "Presets",
           icon: CircleDollarSign
         },
         {
           href: "/tx-history",
           label: "Transaction History",
           icon: History
-        },
-        {
-          href: "/payment-transfer",
-          label: "Payment Transfer",
-          icon: WalletMinimal
-        }
-      ]
-    },
-    {
-      groupLabel: "Linking",
-      menus: [
-        {
-          href: "/connect-bank",
-          label: "Connect Bank",
-          icon: CreditCard
         }
       ]
     }

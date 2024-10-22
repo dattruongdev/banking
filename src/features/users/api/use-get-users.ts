@@ -10,7 +10,6 @@ export const useGetUsers = () => {
       const userId = userinfo?.session?.user?.id;
 
       if (sessionToken) {
-        console.log(sessionToken);
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/users/admin/${userId}`,
           {
