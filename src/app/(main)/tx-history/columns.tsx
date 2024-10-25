@@ -20,6 +20,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 export type TransactionRow = {
   id?: string;
   amount?: number;
+  status?: string;
   payee?: string;
   payeeId?: string;
   date?: Date;
@@ -69,6 +70,10 @@ export const columns: ColumnDef<TransactionRow>[] = [
         <div className="text-left">{formatted.toString().substring(0, 24)}</div>
       );
     }
+  },
+  {
+    accessorKey: "status",
+    header: "Status"
   },
   {
     accessorKey: "payee",

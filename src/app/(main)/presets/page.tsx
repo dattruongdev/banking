@@ -21,19 +21,6 @@ export default async function Page({
   params: { slug: string };
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  const { userId, getToken } = auth();
-  const token = await getToken();
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/presets/user/${userId}`,
-    {
-      cache: "no-cache",
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    }
-  );
-  const presets = await response.json();
-
   return (
     <ContentLayout title="My Presets">
       <div className="flex flex-col h-full">

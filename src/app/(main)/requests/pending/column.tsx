@@ -1,10 +1,7 @@
 "use client";
 
-import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown } from "lucide-react";
-import { Checkbox } from "@/components/ui/checkbox";
-import { MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { MoreHorizontal } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,15 +10,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
-import { useAppAuth } from "@/hooks/use-auth";
 
-export type PresetRow = {
-  id?: string;
-  payeeName?: string;
-  payeeId?: string;
-};
+import { ColumnDef } from "@tanstack/react-table";
+import { ArrowUpDown } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { TransactionRow } from "../../tx-history/columns";
 
-export const columns: ColumnDef<PresetRow>[] = [
+// This type is used to define the shape of our data.
+// You can use a Zod schema here if you want.
+export const columns: ColumnDef<TransactionRow>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -45,31 +42,57 @@ export const columns: ColumnDef<PresetRow>[] = [
     enableHiding: false
   },
   {
-    accessorKey: "payeeName",
+    accessorKey: "date",
     header: ({ column }) => {
       return (
         <button
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="flex items-center"
         >
-          Payee Name
+          Date
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </button>
+      );
+    },
+
+    cell: ({ row }) => {
+      const date = row.getValue("date") + "";
+      const formatted = new Date(date);
+      return (
+        <div className="text-left">{formatted.toString().substring(0, 24)}</div>
       );
     }
   },
   {
-    accessorKey: "payeeId",
+    accessorKey: "status",
+    header: "Status"
+  },
+  {
+    accessorKey: "payee",
+    header: "Payee"
+  },
+  {
+    accessorKey: "amount",
     header: ({ column }) => {
       return (
         <button
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="flex items-center"
         >
-          Payee ID
+          Amount
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </button>
       );
+    },
+
+    cell: ({ row }) => {
+      const amount = parseFloat(row.getValue("amount"));
+      const formatted = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "VND"
+      }).format(amount);
+
+      return <div className="font-medium">{formatted}</div>;
     }
   }
 ];

@@ -1,3 +1,5 @@
+"use client";
+
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -21,19 +23,18 @@ import {
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { DataTablePagination } from "./data-table-pagination";
 import { cn } from "@/lib/utils";
-import DeleteBtn from "./DeleteBtn";
-import ApproveBtn from "./ApproveBtn";
-import CancelBtn from "./CancelBtn";
+import DeleteBtn from "@/components/DeleteBtn";
+import { DataTablePagination } from "@/components/data-table-pagination";
+import ApproveBtn from "@/components/ApproveBtn";
+import CancelBtn from "@/components/CancelBtn";
 
 interface DataTableProps<TData, TValue> {
-  handlers: {
-    [handlerName: string]: ((data: TData[]) => void) | null;
-  };
   filterCol: string;
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  cancelHandler: (data: TData[]) => void;
+  approveHandler: (data: TData[]) => void;
 }
 
 // Combine DataTableProps and Handlers in the function signature
@@ -41,7 +42,8 @@ export function DataTable<TData, TValue>({
   filterCol,
   columns,
   data,
-  handlers
+  cancelHandler,
+  approveHandler
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -61,10 +63,8 @@ export function DataTable<TData, TValue>({
     }
   });
 
-  const selectedRowNum = table.getFilteredSelectedRowModel().rows.length;
-  const deleteHandler = handlers["deleteHandler"];
-  // const cancelHandler = handlers["cancelHandler"];
-  // const approveHandler = handlers["approveHandler"];
+  const selectedRowNum =
+    table?.getFilteredSelectedRowModel()?.rows?.length ?? 0;
 
   return (
     <div>
@@ -78,27 +78,18 @@ export function DataTable<TData, TValue>({
           className="max-w-sm"
         />
 
-        {deleteHandler != null ? (
-          <DeleteBtn
-            deleteHandler={deleteHandler}
+        <div className="flex items-center gap-3">
+          <ApproveBtn
+            approveHandler={approveHandler}
             selectedRowNum={selectedRowNum}
             table={table}
           />
-        ) : null}
-        {/* {approveHandler && cancelHandler ? (
-          <div className="flex items-center gap-3">
-            <ApproveBtn
-              approveHandler={approveHandler}
-              selectedRowNum={selectedRowNum}
-              table={table}
-            />
-            <CancelBtn
-              cancelHandler={cancelHandler}
-              selectedRowNum={selectedRowNum}
-              table={table}
-            />
-          </div>
-        ) : null} */}
+          <CancelBtn
+            cancelHandler={cancelHandler}
+            selectedRowNum={selectedRowNum}
+            table={table}
+          />
+        </div>
       </div>
 
       <div className="rounded-md border-2">

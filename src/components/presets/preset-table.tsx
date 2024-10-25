@@ -2,7 +2,6 @@
 import { Preset, useGetPresets } from "@/features/presets/use-get-presets";
 import { CirclePlus, CreditCard, Loader2 } from "lucide-react";
 import React from "react";
-import { DataTable } from "@/components/data-table";
 import { columns, PresetRow } from "@/app/(main)/presets/columns";
 import {
   Tooltip,
@@ -12,6 +11,8 @@ import {
 } from "../ui/tooltip";
 import Image from "next/image";
 import PresetSheet from "../forms/preset-sheet";
+import { useAppAuth } from "@/hooks/use-auth";
+import { DataTable } from "@/app/(main)/presets/data-table";
 
 function AddBtnNoPresets() {
   return (
@@ -60,6 +61,29 @@ function AddWithPresets() {
 
 function PresetTable() {
   const { data, isLoading, isError } = useGetPresets();
+  const { session, sessionToken } = useAppAuth();
+
+  async function DeletePreset(presets: Preset[]) {
+    const payeeIds = presets.map((preset) => preset.payeeId);
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/presets/delete`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${sessionToken}`
+        },
+        body: JSON.stringify({
+          payeeIds,
+          payerId: session?.user.id
+        })
+      }
+    );
+
+    if (!response.ok) {
+      console.log(response.status, response.statusText);
+    }
+  }
 
   return (
     <>
@@ -76,6 +100,7 @@ function PresetTable() {
               </div>
               <DataTable
                 filterCol="payeeName"
+                deleteHandler={DeletePreset}
                 columns={columns}
                 data={data.map((item: Preset) => {
                   const row: PresetRow = {

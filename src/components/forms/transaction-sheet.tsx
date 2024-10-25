@@ -22,9 +22,9 @@ export default function TransactionSheet() {
           Add Transaction
         </button>
       </SheetTrigger>
-      <SheetContent className="sm:w-72 px-3 h-full flex flex-col" side="right">
+      <SheetContent className="sm:w-100 px-3 h-full flex flex-col" side="right">
         <SheetHeader>
-          <SheetTitle>Edit profile</SheetTitle>
+          <SheetTitle>Make Transaction</SheetTitle>
           <SheetDescription>
             Make changes to your profile here. Click save when you're done.
           </SheetDescription>
